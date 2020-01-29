@@ -53,7 +53,9 @@ MIT, see [LICENSE](LICENSE)
 
 ## Citing
 
-If you use this project in a scientific publication or in classes, please consider citing as
+If you use this project in a scientific publication or in classes, please
+consider citing as
 
-F. L. S. Bustamante, *Planck's law* - Plotting the black body radiation, 2020 -
-Available at: https://github.com/chicolucio/planck
+F. L. S. Bustamante, *Solutions* - Solubility and concentration database of
+common chemical substances., 2020 - Available at:
+https://github.com/chicolucio/solutions
