@@ -124,7 +124,7 @@ def plot(salts_list, colors=plt.cm.Dark2, interpolation=True,
             x = [int(i) for i in DF.iloc[index, 1:].dropna().index]
 
             if len(y) < 2:
-                continue
+                ax.plot(x, y)  # to maintain the lines and markers colors
             elif len(y) < 5:
                 f = interp1d(x, y, kind='linear')
                 temp_new = np.arange(min(x), max(x), 0.1)
