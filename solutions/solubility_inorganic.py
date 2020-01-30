@@ -31,7 +31,7 @@ def compounds_indexes(compounds_list):
     Raises
     ------
     ValueError
-        Not a valid name/formula (not in the dataframe)
+        Not a valid formula (not in the dataframe)
     """
     if any(FORMULAS.isin(compounds_list)):
         idx_formulas = DF.index[FORMULAS.isin(compounds_list)].values
@@ -73,23 +73,25 @@ def _plot_params(plot_size=(10, 8)):
     return fig, ax
 
 
-def plot(salts_list, colors=plt.cm.Dark2, interpolation=True,
+def plot(compounds_list, colors=plt.cm.Dark2, interpolation=True,
          plot_size=(10, 8)):
     """Plot of the data
 
     Parameters
     ----------
-    salts_list : list of strings
-        List of salts names or formulas (strings)
+    compounds_list : list of strings
+        List of salts formulas (strings)
     colors : Matplotlib colormap, optional
         colormap, by default plt.cm.Dark2
     interpolation : bool, optional
         If a curve build with interpolation must be plotted, by default True
+        If less than 5 five data points are available, a linear interpolation
+        will be done. Otherwise, a cubic one will be plotted.
     plot_size : tuple, optional
         Figure size, by default (10, 8)
     """
     _plot_params(plot_size=plot_size)
-    idx = compounds_indexes(salts_list)
+    idx = compounds_indexes(compounds_list)
 
     ax = plt.gca()
     colormap = colors
