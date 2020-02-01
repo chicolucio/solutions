@@ -75,7 +75,7 @@ def _plot_params(plot_size=(10, 8)):
     return fig, ax
 
 
-def plot(salts_list, colors=plt.cm.Dark2, interpolation=True,
+def plot(salts_list, colors=plt.cm.Dark2, interpolation=False,
          plot_size=(10, 8)):
     """Plot of the data
 
