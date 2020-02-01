@@ -12,6 +12,12 @@ _CRC Handbook of Chemistry and Physics_, 98th Edition, CRC Press LLC, 2017.
 [[Data]](data/molality_common_salts_ambient_temperatures.csv)
 [[Tutorial]](tutorials/molality_salts_ambient_temperatures.ipynb)
 
+- Aqueous solubility of 316 inorganic compounds at various temperatures.
+Solubility values are expressed as mass percent of solute. Reference: Rumble, J.
+_CRC Handbook of Chemistry and Physics_, 98th Edition, CRC Press LLC, 2017.
+[[Data]](data/aqueous_solubility_inorganic_temperatures.csv)
+[[Tutorial]](tutorials/aqueous_solubility_inorganic_temperatures.ipynb)
+
 ## Installation
 
 Just clone or download this repo. This is not a package (yet, maybe someday :-))
