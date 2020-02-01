@@ -86,7 +86,7 @@ def plot(salts_list, colors=plt.cm.Dark2, interpolation=False,
     colors : Matplotlib colormap, optional
         colormap, by default plt.cm.Dark2
     interpolation : bool, optional
-        If a curve build with interpolation must be plotted, by default True
+        If a curve build with interpolation must be plotted, by default False
     plot_size : tuple, optional
         Figure size, by default (10, 8)
     """

@@ -176,9 +176,7 @@ def plot(compounds_list, colors=plt.cm.Dark2, interpolation=False,
     colors : Matplotlib colormap, optional
         colormap, by default plt.cm.Dark2
     interpolation : bool, optional
-        If a curve build with interpolation must be plotted, by default True
-        If less than 5 five data points are available, a linear interpolation
-        will be done. Otherwise, a cubic one will be plotted.
+        If a curve build with linear interpolation must be plotted, by default False
     plot_size : tuple, optional
         Figure size, by default (10, 8)
     """
@@ -219,13 +217,9 @@ def plot(compounds_list, colors=plt.cm.Dark2, interpolation=False,
 
             if len(y) < 2:
                 ax.plot(x, y)  # to maintain the lines and markers colors
-            elif len(y) < 5:
+            else:
                 f = interp1d(x, y, kind='linear')
                 temp_new = np.arange(min(x), max(x), 0.1)
-                ax.plot(temp_new, f(temp_new))
-            else:
-                f = interp1d(x, y, kind='cubic')
-                temp_new = np.linspace(min(x), max(x), num=100)
                 ax.plot(temp_new, f(temp_new))
 
     ax.legend(loc='upper left', bbox_to_anchor=(1, 1), fontsize=14)
