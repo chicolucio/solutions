@@ -9,9 +9,74 @@ from scipy.interpolate import interp1d
 DF = pd.read_csv(
     '../data/aqueous_solubility_inorganic_temperatures.csv', index_col=0)
 
+DF_PHASE_CHANGE = pd.read_csv(
+    '../data/aqueous_solubility_inorganic_temperatures_phase_changes_STRINGS.csv', index_col=0)
+
 FORMULAS = DF['Formula']
 
 TEMPERATURES = [int(i) for i in list(DF.columns[1:])]
+
+ANIONS = {'acetate': 'C2H3O2',
+          'arsenate': '[^H][\d]AsO4',
+          'hydrogen arsenate': 'HAsO4',
+          'dihydrogen arsenate': 'H2AsO4',
+          'bicarbonate': 'HCO3',
+          'bromide': 'Br\d?$',
+          'bromate': 'BrO3',
+          'carbonate': '[^H]CO3',
+          'chloride': 'Cl\d?$',
+          'hypochlorite': 'ClO$',
+          'chlorite': 'ClO2',
+          'chlorate': 'ClO3',
+          'perchlorate': 'ClO4',
+          'chromate': 'CrO4',
+          'dichromate': 'Cr2O7',
+          'cyanide': '[^Fe][^S]CN',
+          'fluoride': '[^B]F\d?$',
+          'ferrocyanide': '[4]Fe\(CN\)6',
+          'ferricyanide': '[3]Fe\(CN\)6',
+          'formate': 'CHO2',
+          'hydroxide': 'OH',
+          'iodide': 'I\d?$',
+          'iodate': 'IO3',
+          'periodate': 'IO4',
+          'nitrite': 'NO2',
+          'nitrate': 'NO3',
+          'oxide': '(?<!B|C|S|N|P|I|H|W)(?<!C[0-9]|S[0-9]|H[0-9]|B[0-9]|P[0-9])(?<!As|Cl|Se|Br|Mo|Mn)(?<![0-9a-z]Cr)(?<![0-9a-z]Cr\d)O\d?$',
+          'oxalate': 'C2O4',
+          'permanganate': 'MnO4',
+          'molybdate': 'MoO4',
+          'phosphate': '[^H][\d]PO4',
+          'hydrogenphosphate': 'HPO4',
+          'dihydrogenphosphate': 'H2PO4',
+          'phosphite': '[^H]PO3',
+          'hydrogenphosphite': 'HPO3',
+          'pyrophosphate': 'P2O7',
+          'selenite': 'SeO3',
+          'selenate': 'SeO4',
+          'sulfide': 'S\d?$',
+          'sulfite': '[^H]SO3',
+          'sulfate': '[^H]SO4',
+          'hydrogen sulfate': 'HSO4',
+          'borate': 'BO3',
+          'tetrafluoroborate': 'BF4',
+          'tetraborate': 'B4O7',
+          'thiocyanate': 'SCN',
+          'thiosulfate': 'S2O3',
+          'disulfite': 'S2O5',
+          'peroxydisulfate': 'S2O8',
+          'tungstate': 'WO4',
+          }
+
+GROUPS = {'group1': ['Li', 'Na', 'K', 'Rb', 'Cs', 'Fr'],
+          'group2': ['Be', 'Mg', 'Ca', 'Sr', 'Ba', 'Ra'],
+          'transition_3d': ['Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn'],
+          'transition_4d': ['Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd'],
+          'transition_5d': ['Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg'],
+          'lanthanides': ['La', 'Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu'],
+          'actinides': ['Th', 'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es', 'Fm', 'Md', 'No', 'Lr'],
+          'halides': [ANIONS[key] for key in ['bromide', 'chloride', 'fluoride', 'iodide']],
+          }
 
 
 def compounds_indexes(compounds_list):
@@ -39,6 +104,33 @@ def compounds_indexes(compounds_list):
         raise ValueError('Input not valid')
 
     return idx_formulas
+
+
+def df_subset(dataframe, mask):
+    """Creates a subset of the dataframe based on a given mask.
+
+    Parameters
+    ----------
+    dataframe : pandas dataframe
+        dataframe
+    mask : string
+        mask to be applied
+
+    Returns
+    -------
+    pandas dataframe
+        subset of the given dataframe
+    """
+    if mask in ANIONS:
+        df = dataframe[dataframe['Formula'].str.contains(
+            '|'.join(ANIONS[mask]))]
+    elif mask in GROUPS:
+        df = dataframe[dataframe['Formula'].str.contains(
+            '|'.join(GROUPS[mask]))]
+    else:
+        df = dataframe[dataframe['Formula'].str.contains(
+            mask)]
+    return df
 
 
 def _plot_params(plot_size=(10, 8)):
