@@ -6,6 +6,8 @@ import pandas as pd
 from matplotlib.lines import Line2D
 from scipy.interpolate import interp1d
 from chempy import Substance
+import pathlib
+import time
 
 DF = pd.read_csv(
     '../data/aqueous_solubility_inorganic_temperatures.csv', index_col=0)
@@ -272,7 +274,7 @@ def _plot_params(plot_size=(10, 8), size=16, unit='mass percentage'):
 
 
 def plot(compounds_list, colors=plt.cm.Dark2, interpolation=False,
-         plot_size=(10, 8), unit='mass percentage'):
+         plot_size=(10, 8), unit='mass percentage', save_fig=False):
     """Plot of the data
 
     Parameters
@@ -289,6 +291,8 @@ def plot(compounds_list, colors=plt.cm.Dark2, interpolation=False,
         Desired unit, by default 'mass percentage'
         'solubility' means solubility in grams of solute per 100 g of water
         'molality' and 'mole percentage' are self explanatory.
+    save_fig : bool, optional
+        if the plot should be saved or not, by default False
     """
     _plot_params(plot_size=plot_size, unit=unit)
     idx = compounds_indexes(compounds_list)
@@ -333,5 +337,12 @@ def plot(compounds_list, colors=plt.cm.Dark2, interpolation=False,
                 ax.plot(temp_new, f(temp_new))
 
     ax.legend(loc='upper left', bbox_to_anchor=(1, 1), fontsize=14)
+
+    if save_fig:
+        pathlib.Path('saves').mkdir(parents=False, exist_ok=True)
+        tme = time.localtime()
+        time_string = time.strftime("%Y%m%d_%H:%M:%S", tme)
+        plt.savefig('saves/{0}_{1}.png'.format(unit, time_string),
+                    bbox_inches='tight')
 
     plt.show()
