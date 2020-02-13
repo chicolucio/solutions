@@ -119,10 +119,44 @@ def compounds_indexes(compounds_list):
 
 
 def molar_mass_solute(idx_formula):
+    """Calculates the molar mass for a chemical formula in a dataframe.
+
+    Parameters
+    ----------
+    idx_formula : int
+        Integer representing an index in a dataframe
+
+    Returns
+    -------
+    float
+        Molar mass for a chemical formula in a dataframe
+    """
     return Substance.from_formula(DF.iloc[idx_formula, 0]).mass
 
 
 def conversion(idx_formula, unit='mass percentage'):
+    """Conversion function. Converts the mass percentage from the database
+    to other units.
+
+    Parameters
+    ----------
+    idx_formula : int
+        Integer representing an index in a dataframe
+    unit : str, optional
+        Desired unit, by default 'mass percentage'
+        'solubility' means solubility in grams of solute per 100 g of water
+        'molality' and 'mole percentage' are self explanatory.
+
+    Returns
+    -------
+    pandas series
+        Converted values.
+
+    Raises
+    ------
+    ValueError
+        Error raised when the unit passed is not valid.
+    """
     data_mass_percentage = DF.iloc[idx_formula, 1:]
 
     if unit == 'mass percentage':
@@ -149,8 +183,12 @@ def df_subset(dataframe, mask, unit='mass percentage'):
     ----------
     dataframe : pandas dataframe
         dataframe
-    mask : string
+    mask : str
         mask to be applied
+    unit : str, optional
+        Desired unit, by default 'mass percentage'
+        'solubility' means solubility in grams of solute per 100 g of water
+        'molality' and 'mole percentage' are self explanatory.
 
     Returns
     -------
@@ -182,6 +220,12 @@ def _plot_params(plot_size=(10, 8), size=16, unit='mass percentage'):
     ----------
     plot_size : tuple, optional
         Figure size, by default (10, 8)
+    size : int, optional
+        Reference for labels sizes, by default 16
+    unit : str, optional
+        Desired unit, by default 'mass percentage'
+        'solubility' means solubility in grams of solute per 100 g of water
+        'molality' and 'mole percentage' are self explanatory.
 
     Returns
     -------
@@ -241,6 +285,10 @@ def plot(compounds_list, colors=plt.cm.Dark2, interpolation=False,
         If a curve build with linear interpolation must be plotted, by default False
     plot_size : tuple, optional
         Figure size, by default (10, 8)
+    unit : str, optional
+        Desired unit, by default 'mass percentage'
+        'solubility' means solubility in grams of solute per 100 g of water
+        'molality' and 'mole percentage' are self explanatory.
     """
     _plot_params(plot_size=plot_size, unit=unit)
     idx = compounds_indexes(compounds_list)
@@ -267,7 +315,6 @@ def plot(compounds_list, colors=plt.cm.Dark2, interpolation=False,
         label_formula = '$\mathregular{'+label_formula+'}$'
 
         ax.scatter(TEMPERATURES,
-                   #    DF.iloc[index, 1:].to_list(),
                    conversion(index, unit=unit).to_list(),
                    marker=mark,
                    s=100,
