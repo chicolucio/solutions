@@ -122,27 +122,27 @@ def molar_mass_solute(idx_formula):
     return Substance.from_formula(DF.iloc[idx_formula, 0]).mass
 
 
-def conversion(idx_formula, unit='percentage'):
+def conversion(idx_formula, unit='mass percentage'):
     data_mass_percentage = DF.iloc[idx_formula, 1:]
 
-    if unit == 'percentage':
+    if unit == 'mass percentage':
         result = data_mass_percentage
     elif unit == 'solubility':
         result = data_mass_percentage / (1 - data_mass_percentage / 100)
     elif unit == 'molality':
         result = (10 * data_mass_percentage) / \
             (molar_mass_solute(idx_formula) * (1 - data_mass_percentage / 100))
-    elif unit == 'mole fraction':
+    elif unit == 'mole percentage':
         result = (data_mass_percentage/100 / molar_mass_solute(idx_formula)) / \
             ((data_mass_percentage / 100 / molar_mass_solute(idx_formula)) +
-                (1 - data_mass_percentage / 100) / M_water)
+                (1 - data_mass_percentage / 100) / M_water) * 100
     else:
         raise ValueError('Unit not valid')
 
     return result
 
 
-def df_subset(dataframe, mask, unit='percentage'):
+def df_subset(dataframe, mask, unit='mass percentage'):
     """Creates a subset of the dataframe based on a given mask.
 
     Parameters
@@ -166,7 +166,7 @@ def df_subset(dataframe, mask, unit='percentage'):
         df = dataframe[dataframe['Formula'].str.contains(
             mask)]
 
-    if unit == 'percentage':
+    if unit == 'mass percentage':
         df = df
     else:
         for i in df.index:
@@ -175,7 +175,7 @@ def df_subset(dataframe, mask, unit='percentage'):
     return df
 
 
-def _plot_params(plot_size=(10, 8)):
+def _plot_params(plot_size=(10, 8), size=16, unit='mass percentage'):
     """Plot parameters.
 
     Parameters
@@ -198,17 +198,37 @@ def _plot_params(plot_size=(10, 8)):
             linestyle='--', linewidth=2.0, zorder=-1)
     ax.minorticks_on()
     ax.grid(b=True, which='minor', axis='both', linestyle=':', linewidth=1.0)
-    ax.tick_params(axis='both', labelsize=16,
+    ax.tick_params(axis='both', labelsize=size,
                    length=6, which='major', width=1.5)
-    ax.set_xlabel('Temperature / °C', size=18)
-    ax.set_ylabel('Solubility in mass percentage / %', size=18)
-    ax.set_title('Aqueous solubility in mass percentage', size=18)
+    ax.set_xlabel('Temperature / °C', size=size+2)
+
+    if unit == 'mass percentage':
+        ax.set_ylabel('Solubility in mass percentage / %', size=size+2)
+        ax.set_title('Aqueous solubility in mass percentage', size=size+2)
+
+    elif unit == 'solubility':
+        ax.set_ylabel(
+            'Solubility in grams of solute per 100 g of water', size=size+2)
+        ax.set_title(
+            'Aqueous solubility in grams of solute per 100 g of water', size=size+2)
+
+    elif unit == 'molality':
+        ax.set_ylabel('Solubility in molality / (mol/kg water)', size=size+2)
+        ax.set_title('Aqueous solubility in molality', size=size+2)
+
+    elif unit == 'mole percentage':
+        ax.set_ylabel(
+            'Solubility in mole percentage / %', size=size+2)
+        ax.set_title('Aqueous solubility in mole percentage', size=size+2)
+
+    else:
+        raise ValueError('Unit not valid')
 
     return fig, ax
 
 
 def plot(compounds_list, colors=plt.cm.Dark2, interpolation=False,
-         plot_size=(10, 8)):
+         plot_size=(10, 8), unit='mass percentage'):
     """Plot of the data
 
     Parameters
@@ -222,7 +242,7 @@ def plot(compounds_list, colors=plt.cm.Dark2, interpolation=False,
     plot_size : tuple, optional
         Figure size, by default (10, 8)
     """
-    _plot_params(plot_size=plot_size)
+    _plot_params(plot_size=plot_size, unit=unit)
     idx = compounds_indexes(compounds_list)
 
     ax = plt.gca()
