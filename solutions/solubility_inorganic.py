@@ -142,7 +142,7 @@ def conversion(idx_formula, unit='percentage'):
     return result
 
 
-def df_subset(dataframe, mask):
+def df_subset(dataframe, mask, unit='percentage'):
     """Creates a subset of the dataframe based on a given mask.
 
     Parameters
@@ -165,6 +165,13 @@ def df_subset(dataframe, mask):
     else:
         df = dataframe[dataframe['Formula'].str.contains(
             mask)]
+
+    if unit == 'percentage':
+        df = df
+    else:
+        for i in df.index:
+            df[:].loc[i, '0':] = conversion(i, unit=unit).values
+
     return df
 
 
