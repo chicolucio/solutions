@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from matplotlib.lines import Line2D
 from scipy.interpolate import interp1d
+from chempy import Substance
 
 DF = pd.read_csv(
     '../data/aqueous_solubility_inorganic_temperatures.csv', index_col=0)
@@ -15,6 +16,8 @@ DF_PHASE_CHANGE = pd.read_csv(
 FORMULAS = DF['Formula']
 
 TEMPERATURES = [int(i) for i in list(DF.columns[1:])]
+
+M_water = 18.015  # g/mol
 
 _ANIONS = {'acetate': 'C2H3O2',
            'arsenate': '[^H][\d]AsO4',
@@ -85,7 +88,7 @@ def show_filters():
 
     print('Anions filters: ', anions_filters)
     print()
-    print('Groups filters', groups_filters)
+    print('Groups filters:', groups_filters)
 
 
 def compounds_indexes(compounds_list):
@@ -113,6 +116,30 @@ def compounds_indexes(compounds_list):
         raise ValueError('Input not valid')
 
     return idx_formulas
+
+
+def molar_mass_solute(idx_formula):
+    return Substance.from_formula(DF.iloc[idx_formula, 0]).mass
+
+
+def conversion(idx_formula, unit='percentage'):
+    data_mass_percentage = DF.iloc[idx_formula, 1:]
+
+    if unit == 'percentage':
+        result = data_mass_percentage
+    elif unit == 'solubility':
+        result = data_mass_percentage / (1 - data_mass_percentage / 100)
+    elif unit == 'molality':
+        result = (10 * data_mass_percentage) / \
+            (molar_mass_solute(idx_formula) * (1 - data_mass_percentage / 100))
+    elif unit == 'mole fraction':
+        result = (data_mass_percentage/100 / molar_mass_solute(idx_formula)) / \
+            ((data_mass_percentage / 100 / molar_mass_solute(idx_formula)) +
+                (1 - data_mass_percentage / 100) / M_water)
+    else:
+        raise ValueError('Unit not valid')
+
+    return result
 
 
 def df_subset(dataframe, mask):
