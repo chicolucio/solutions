@@ -173,7 +173,7 @@ def conversion(idx_formula, unit='mass percentage'):
     else:
         raise ValueError('Unit not valid')
 
-    return result
+    return result.astype(float).round(decimals=3)
 
 
 def df_subset(dataframe, mask, unit='mass percentage'):
