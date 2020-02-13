@@ -267,15 +267,16 @@ def plot(compounds_list, colors=plt.cm.Dark2, interpolation=False,
         label_formula = '$\mathregular{'+label_formula+'}$'
 
         ax.scatter(TEMPERATURES,
-                   DF.iloc[index, 1:].to_list(),
+                   #    DF.iloc[index, 1:].to_list(),
+                   conversion(index, unit=unit).to_list(),
                    marker=mark,
                    s=100,
                    zorder=2,
                    label=label_formula)
 
         if interpolation:
-            y = DF.iloc[index, 1:].dropna().values
-            x = [int(i) for i in DF.iloc[index, 1:].dropna().index]
+            y = conversion(index, unit=unit).dropna().values
+            x = [int(i) for i in conversion(index, unit=unit).dropna().index]
 
             if len(y) < 2:
                 ax.plot(x, y)  # to maintain the lines and markers colors
