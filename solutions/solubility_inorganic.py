@@ -158,8 +158,7 @@ def df_subset(dataframe, mask):
         subset of the given dataframe
     """
     if mask in _ANIONS:
-        df = dataframe[dataframe['Formula'].str.contains(
-            '|'.join(_ANIONS[mask]))]
+        df = dataframe[dataframe['Formula'].str.contains(_ANIONS[mask])]
     elif mask in _GROUPS:
         df = dataframe[dataframe['Formula'].str.contains(
             '|'.join(_GROUPS[mask]))]
