@@ -28,7 +28,9 @@ See the tutorials files for each data set.
 
 ## Under the hood - requirements
 
-This project relies mainly on Pandas, SciPy, Matplotlib and numpy.
+This project relies mainly on [Pandas](https://pandas.pydata.org/),
+[SciPy](https://www.scipy.org/), [Matplotlib](https://matplotlib.org/) and
+[chempy](https://github.com/bjodah/chempy).
 
 ## Contributing
 
